@@ -28,3 +28,16 @@ jobs:
       - name: Notify Slack
         run: |
           curl -X POST -H 'Content-type: application/json' --data '{"text":"CI завершено!"}' ${{ secrets.SLACK_WEBHOOK }}
+      - name: Notify Slack (Success)
+        if: success()
+        run: |
+          curl -X POST -H 'Content-type: application/json' \
+            --data '{"text":"✅ CI успішно завершено для репозиторію *${{ github.repository }}*."}' \
+            ${{ secrets.SLACK_WEBHOOK }}
+
+      - name: Notify Slack (Failure)
+        if: failure()
+        run: |
+          curl -X POST -H 'Content-type: application/json' \
+            --data '{"text":"❌ CI завершився з помилкою в репозиторії *${{ github.repository }}*."}' \
+            ${{ secrets.SLACK_WEBHOOK }}
